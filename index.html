@@ -10,11 +10,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <!-- Updated Icon for iPhone Home Screen -->
-    <link rel="apple-touch-icon" href="https://img.icons8.com/color/512/quran.png">
+    <!-- CUSTOM ICON: White Text on Black Background (SVG Data URI) -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9ImJsYWNrIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LWZhbWlseT0iJ1NlZ29lIFVJJywgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iNjAiPjx0c3BhbiB4PSI1MCUiIGR5PSIwIj5FYXN5PC90c3Bhbj48dHNwYW4geD0iNTAlIiBkeT0iODAiPlF1cmFuPC90c3Bhbj48dHNwYW4geD0iNTAlIiBkeT0iODAiPlJlYWRlcjwvdHNwYW4+PC90ZXh0Pjwvc3ZnPg==">
     
-    <!-- Manifest Link (Updated Icons) -->
-    <link rel="manifest" href='data:application/manifest+json,{"name":"Easy Quran","short_name":"Quran","description":"Minimalist Quran Reader","start_url":".","display":"standalone","background_color":"#000000","theme_color":"#000000","icons":[{"src":"https://img.icons8.com/color/512/quran.png","sizes":"512x512","type":"image/png"}]}'>
+    <!-- Manifest with custom icon -->
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Easy Quran Reader","short_name":"Quran","description":"Minimalist Quran Reader","start_url":".","display":"standalone","background_color":"#000000","theme_color":"#000000","icons":[{"src":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9ImJsYWNrIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LWZhbWlseT0iJ1NlZ29lIFVJJywgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iNjAiPjx0c3BhbiB4PSI1MCUiIGR5PSIwIj5FYXN5PC90c3Bhbj48dHNwYW4geD0iNTAlIiBkeT0iODAiPlF1cmFuPC90c3Bhbj48dHNwYW4geD0iNTAlIiBkeT0iODAiPlJlYWRlcjwvdHNwYW4+PC90ZXh0Pjwvc3ZnPg==","sizes":"512x512","type":"image/svg+xml"}]}'>
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
@@ -172,7 +172,7 @@
     <script>
         /** SERVICE WORKER **/
         const swCode = `
-            const CACHE_NAME = 'quran-reader-v2';
+            const CACHE_NAME = 'quran-reader-v3';
             self.addEventListener('install', (e) => {
                 e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll([
                     'https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css',
@@ -229,7 +229,7 @@
                 render();
             } catch (err) {
                 console.error(err);
-                alert("Please check internet connection for the first load.");
+                alert("Connection required for first load.");
             }
         }
 

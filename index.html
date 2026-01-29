@@ -9,10 +9,12 @@
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2904/2904975.png">
     
-    <!-- Manifest Link -->
-    <link rel="manifest" href='data:application/manifest+json,{"name":"Easy Quran","short_name":"Quran","description":"Minimalist Quran Reader","start_url":".","display":"standalone","background_color":"#000000","theme_color":"#000000","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/2904/2904975.png","sizes":"512x512","type":"image/png"}]}'>
+    <!-- Updated Icon for iPhone Home Screen -->
+    <link rel="apple-touch-icon" href="https://img.icons8.com/color/512/quran.png">
+    
+    <!-- Manifest Link (Updated Icons) -->
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Easy Quran","short_name":"Quran","description":"Minimalist Quran Reader","start_url":".","display":"standalone","background_color":"#000000","theme_color":"#000000","icons":[{"src":"https://img.icons8.com/color/512/quran.png","sizes":"512x512","type":"image/png"}]}'>
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
@@ -247,7 +249,6 @@
             }
 
             const globalIndex = getGlobalAyahIndex(curS, curA);
-            // Using Alafasy recitation from Islamic Network CDN
             const audioUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${globalIndex}.mp3`;
             
             btnAudio.classList.add('is-loading');
@@ -264,11 +265,9 @@
                 });
         }
 
-        // Stop audio when changing verses
         audioPlayer.onended = () => btnAudio.classList.remove('is-playing');
 
         function render() {
-            // Stop any playing audio
             audioPlayer.pause();
             btnAudio.classList.remove('is-playing', 'is-loading');
 
@@ -314,7 +313,6 @@
             render();
         }
 
-        // Event Listeners
         btnBookmark.addEventListener('click', toggleBookmark);
         btnAudio.addEventListener('click', playRecitation);
 

@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2904/2904975.png">
     
-    <!-- Manifest Link -->
+    <!-- Manifest Link (Data URI) -->
     <link rel="manifest" href='data:application/manifest+json,{"name":"Easy Quran","short_name":"Quran","description":"Minimalist Quran Reader","start_url":".","display":"standalone","background_color":"#000000","theme_color":"#000000","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/2904/2904975.png","sizes":"512x512","type":"image/png"}]}'>
 
     <!-- Stylesheets -->
@@ -28,7 +28,6 @@
             --text-trans: #4aedc4;
             --text-en: #b0b0b0;
             --accent: #ffd700;
-            --audio-playing: #4aedc4;
         }
 
         body, html {
@@ -87,12 +86,6 @@
             z-index: 10;
         }
 
-        .top-bar-actions {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
         .meta-text {
             font-size: 0.8rem;
             text-transform: uppercase;
@@ -100,24 +93,18 @@
             color: #888;
         }
 
-        .action-btn {
+        #bookmark-btn {
             background: none;
             border: none;
-            color: #666;
-            font-size: 1.3rem;
+            color: #444;
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            padding: 5px;
+            transition: color 0.3s ease, transform 0.2s ease;
         }
 
-        #bookmark-btn.is-active { color: var(--accent); }
-        #audio-btn.is-playing { color: var(--audio-playing); transform: scale(1.2); }
-        #audio-btn.is-loading { opacity: 0.5; animation: pulse 1s infinite; }
-
-        @keyframes pulse {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
+        #bookmark-btn.is-active {
+            color: var(--accent);
+            transform: scale(1.1);
         }
 
         #loader {
@@ -130,6 +117,7 @@
             z-index: 100;
         }
 
+        /* Navigation hints for desktop */
         .nav-hint {
             position: fixed;
             bottom: 20px;
@@ -139,6 +127,21 @@
             text-align: center;
             pointer-events: none;
         }
+
+        @media screen and (orientation: portrait) {
+            #portrait-warning { display: flex; }
+        }
+        #portrait-warning {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #000;
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
@@ -147,16 +150,20 @@
         <button class="button is-loading is-black is-large"></button>
     </div>
 
+    <div id="portrait-warning">
+        <div class="has-text-white">
+            <i class="fas fa-redo fa-3x mb-4"></i>
+            <p class="title is-4 has-text-white">Landscape Mode Recommended</p>
+            <p class="subtitle is-6 has-text-grey">Please rotate your device for the best reading experience.</p>
+            <button class="button is-small is-dark mt-4" onclick="document.getElementById('portrait-warning').style.display='none'">Dismiss</button>
+        </div>
+    </div>
+
     <div class="top-bar">
         <div class="meta-text" id="meta-info">Loading...</div>
-        <div class="top-bar-actions">
-            <button id="audio-btn" class="action-btn" title="Hear Recitation">
-                <i class="fas fa-volume-up"></i>
-            </button>
-            <button id="bookmark-btn" class="action-btn" title="Toggle Bookmark">
-                <i class="fas fa-bookmark"></i>
-            </button>
-        </div>
+        <button id="bookmark-btn" title="Toggle Bookmark">
+            <i class="fas fa-bookmark"></i>
+        </button>
     </div>
 
     <main class="reader-container" id="app">
@@ -168,15 +175,22 @@
     <div class="nav-hint is-hidden-mobile">Use Arrow Keys or Swipe to navigate</div>
 
     <script>
-        /** SERVICE WORKER **/
+        /** SERVICE WORKER INJECTION **/
+        // This allows the app to work offline by caching all external resources
         const swCode = `
-            const CACHE_NAME = 'quran-reader-v2';
+            const CACHE_NAME = 'quran-reader-v1';
+            const ASSETS = [
+                'https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css',
+                'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+                'https://cdn.jsdelivr.net/npm/quran-json@3.1.2/dist/quran_en.json',
+                'https://cdn.jsdelivr.net/npm/quran-json@3.1.2/dist/quran_transliteration.json',
+                'https://cdn.jsdelivr.net/npm/quran-json@3.1.2/dist/quran.json'
+            ];
+
             self.addEventListener('install', (e) => {
-                e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll([
-                    'https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css',
-                    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
-                ])));
+                e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)));
             });
+
             self.addEventListener('fetch', (e) => {
                 e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
             });
@@ -197,13 +211,12 @@
         let curA = 0; 
         let touchStartX = 0;
         let bookmarks = [];
-        let audioPlayer = new Audio();
 
         const btnBookmark = document.getElementById('bookmark-btn');
-        const btnAudio = document.getElementById('audio-btn');
 
         async function init() {
             try {
+                // Fetch data (will be handled by Service Worker after first load)
                 const [rAr, rEn, rTr] = await Promise.all([
                     fetch(API_AR).then(r => r.json()),
                     fetch(API_EN).then(r => r.json()),
@@ -221,57 +234,19 @@
                 }
 
                 const savedBookmarks = localStorage.getItem('quran_bookmarks');
-                if (savedBookmarks) bookmarks = JSON.parse(savedBookmarks);
+                if (savedBookmarks) {
+                    bookmarks = JSON.parse(savedBookmarks);
+                }
 
                 document.getElementById('loader').style.display = 'none';
                 render();
             } catch (err) {
                 console.error(err);
-                alert("Please check internet connection for the first load.");
+                alert("Please check your internet connection for the first load.");
             }
         }
-
-        function getGlobalAyahIndex(surahIdx, ayahIdx) {
-            let total = 0;
-            for (let i = 0; i < surahIdx; i++) {
-                total += quranData.ar[i].verses.length;
-            }
-            return total + ayahIdx + 1;
-        }
-
-        function playRecitation() {
-            if (!audioPlayer.paused) {
-                audioPlayer.pause();
-                btnAudio.classList.remove('is-playing');
-                return;
-            }
-
-            const globalIndex = getGlobalAyahIndex(curS, curA);
-            // Using Alafasy recitation from Islamic Network CDN
-            const audioUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${globalIndex}.mp3`;
-            
-            btnAudio.classList.add('is-loading');
-            audioPlayer.src = audioUrl;
-            
-            audioPlayer.play()
-                .then(() => {
-                    btnAudio.classList.remove('is-loading');
-                    btnAudio.classList.add('is-playing');
-                })
-                .catch(e => {
-                    btnAudio.classList.remove('is-loading');
-                    console.error("Audio failed", e);
-                });
-        }
-
-        // Stop audio when changing verses
-        audioPlayer.onended = () => btnAudio.classList.remove('is-playing');
 
         function render() {
-            // Stop any playing audio
-            audioPlayer.pause();
-            btnAudio.classList.remove('is-playing', 'is-loading');
-
             const sAr = quranData.ar[curS];
             const sEn = quranData.en[curS];
             const sTr = quranData.tr[curS];
@@ -283,6 +258,7 @@
             document.getElementById('arabic').innerText = aAr.text;
             document.getElementById('translation').innerText = aEn.translation;
             document.getElementById('transliteration').innerText = aTr.transliteration;
+            
             document.getElementById('meta-info').innerText = `${sEn.transliteration} — ${curA + 1}`;
             
             updateBookmarkIcon();
@@ -299,30 +275,39 @@
             const index = bookmarks.indexOf(currentKey);
             if (index > -1) bookmarks.splice(index, 1);
             else bookmarks.push(currentKey);
+            
             localStorage.setItem('quran_bookmarks', JSON.stringify(bookmarks));
             updateBookmarkIcon();
         }
 
         function navigate(dir) {
             if (dir === 'next') {
-                if (curA < quranData.ar[curS].verses.length - 1) { curA++; } 
-                else if (curS < 113) { curS++; curA = 0; }
+                if (curA < quranData.ar[curS].verses.length - 1) {
+                    curA++;
+                } else if (curS < 113) {
+                    curS++;
+                    curA = 0;
+                }
             } else {
-                if (curA > 0) { curA--; } 
-                else if (curS > 0) { curS--; curA = quranData.ar[curS].verses.length - 1; }
+                if (curA > 0) {
+                    curA--;
+                } else if (curS > 0) {
+                    curS--;
+                    curA = quranData.ar[curS].verses.length - 1;
+                }
             }
             render();
         }
 
         // Event Listeners
         btnBookmark.addEventListener('click', toggleBookmark);
-        btnAudio.addEventListener('click', playRecitation);
 
         const app = document.getElementById('app');
         app.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
         app.addEventListener('touchend', e => {
             const touchEndX = e.changedTouches[0].screenX;
             const diff = touchStartX - touchEndX;
+            // Swiping Right-to-Left (Traditional Arabic reading direction)
             if (diff > 50) navigate('next'); 
             if (diff < -50) navigate('prev');
         }, {passive: true});
@@ -330,7 +315,6 @@
         window.addEventListener('keydown', (e) => {
             if (e.key === "ArrowRight") navigate('next');
             if (e.key === "ArrowLeft") navigate('prev');
-            if (e.key === " ") { e.preventDefault(); playRecitation(); }
         });
 
         init();

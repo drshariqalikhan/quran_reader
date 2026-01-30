@@ -10,13 +10,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <!-- CUSTOM ICON: White Text on Black Background (SVG Data URI) -->
-    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9ImJsYWNrIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LWZhbWlseT0iJ1NlZ29lIFVJJywgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iNjAiPjx0c3BhbiB4PSI1MCUiIGR5PSIwIj5FYXN5PC90c3Bhbj48dHNwYW4geD0iNTAlIiBkeT0iODAiPlF1cmFuPC90c3Bhbj48dHNwYW4geD0iNTAlIiBkeT0iODAiPlJlYWRlcjwvdHNwYW4+PC90ZXh0Pjwvc3ZnPg==">
+    <!-- CUSTOM ICON -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9ImJsYWNrIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LWZhbWlseT0iJ1NlZ29lIFVJJywgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iNjAyIj48dHNwYW4geD0iNTAlIiBkeT0iMCI+RWFzeTwvdHNwYW4+PHRzcGFuIHg0PSI1MCUiIGR5PSI4MCI+UXVyYW48L3RzcGFuPjx0c3BhbiB4PSI1MCUiIGR5PSI4MCI+UmVhZGVyPC90c3Bhbj48L3RleHQ+PC9zdmc+">
     
-    <!-- Manifest with custom icon -->
     <link rel="manifest" href='data:application/manifest+json,{"name":"Easy Quran Reader","short_name":"Quran","description":"Minimalist Quran Reader","start_url":".","display":"standalone","background_color":"#000000","theme_color":"#000000","icons":[{"src":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9ImJsYWNrIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LWZhbWlseT0iJ1NlZ29lIFVJJywgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iNjAiPjx0c3BhbiB4PSI1MCUiIGR5PSIwIj5FYXN5PC90c3Bhbj48dHNwYW4geD0iNTAlIiBkeT0iODAiPlF1cmFuPC90c3Bhbj48dHNwYW4geD0iNTAlIiBkeT0iODAiPlJlYWRlcjwvdHNwYW4+PC90ZXh0Pjwvc3ZnPg==","sizes":"512x512","type":"image/svg+xml"}]}'>
 
-    <!-- Stylesheets -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -80,47 +78,50 @@
         .top-bar {
             position: fixed;
             top: 0; left: 0; right: 0;
-            padding: env(safe-area-inset-top, 15px) 25px 15px 25px;
+            padding: env(safe-area-inset-top, 15px) 15px 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             z-index: 10;
+        }
+
+        /* Styling the selectors for dark mode */
+        .navigation-selectors {
+            display: flex;
+            gap: 8px;
+        }
+
+        .select select {
+            background-color: #1a1a1a !important;
+            color: white !important;
+            border-color: #333 !important;
+            font-size: 0.8rem !important;
+            height: 2.2rem !important;
+        }
+        .select:not(.is-multiple):not(.is-loading)::after {
+            border-color: var(--text-trans) !important;
         }
 
         .top-bar-actions {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             align-items: center;
-        }
-
-        .meta-text {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #888;
         }
 
         .action-btn {
             background: none;
             border: none;
-            color: #666;
-            font-size: 1.3rem;
+            color: #888;
+            font-size: 1.2rem;
             cursor: pointer;
             transition: all 0.3s ease;
             padding: 5px;
         }
 
         #bookmark-btn.is-active { color: var(--accent); }
-        #audio-btn.is-playing { color: var(--audio-playing); transform: scale(1.2); }
-        #audio-btn.is-loading { opacity: 0.5; animation: pulse 1s infinite; }
-
-        @keyframes pulse {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
-        }
+        #audio-btn.is-playing { color: var(--audio-playing); transform: scale(1.1); }
 
         #loader {
             position: fixed;
@@ -131,16 +132,6 @@
             align-items: center;
             z-index: 100;
         }
-
-        .nav-hint {
-            position: fixed;
-            bottom: 20px;
-            color: #333;
-            font-size: 0.7rem;
-            width: 100%;
-            text-align: center;
-            pointer-events: none;
-        }
     </style>
 </head>
 <body>
@@ -150,7 +141,15 @@
     </div>
 
     <div class="top-bar">
-        <div class="meta-text" id="meta-info">Loading...</div>
+        <div class="navigation-selectors">
+            <div class="select is-small">
+                <select id="surah-select"></select>
+            </div>
+            <div class="select is-small">
+                <select id="ayah-select"></select>
+            </div>
+        </div>
+        
         <div class="top-bar-actions">
             <button id="audio-btn" class="action-btn" title="Hear Recitation">
                 <i class="fas fa-volume-up"></i>
@@ -167,12 +166,10 @@
         <div class="translation" id="translation"></div>
     </main>
 
-    <div class="nav-hint is-hidden-mobile">Use Arrow Keys or Swipe to navigate</div>
-
     <script>
         /** SERVICE WORKER **/
         const swCode = `
-            const CACHE_NAME = 'quran-reader-v3';
+            const CACHE_NAME = 'quran-reader-v4';
             self.addEventListener('install', (e) => {
                 e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll([
                     'https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css',
@@ -201,6 +198,8 @@
         let bookmarks = [];
         let audioPlayer = new Audio();
 
+        const surahSelect = document.getElementById('surah-select');
+        const ayahSelect = document.getElementById('ayah-select');
         const btnBookmark = document.getElementById('bookmark-btn');
         const btnAudio = document.getElementById('audio-btn');
 
@@ -215,6 +214,14 @@
                 quranData.ar = rAr;
                 quranData.en = rEn;
                 quranData.tr = rTr;
+
+                // Populate Surah Dropdown
+                quranData.en.forEach((s, idx) => {
+                    const opt = document.createElement('option');
+                    opt.value = idx;
+                    opt.textContent = `${idx + 1}. ${s.transliteration}`;
+                    surahSelect.appendChild(opt);
+                });
 
                 const lastPos = localStorage.getItem('quran_last_pos');
                 if (lastPos) {
@@ -233,6 +240,18 @@
             }
         }
 
+        function updateAyahDropdown() {
+            ayahSelect.innerHTML = '';
+            const totalAyahs = quranData.ar[curS].verses.length;
+            for (let i = 0; i < totalAyahs; i++) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = `Ayah ${i + 1}`;
+                ayahSelect.appendChild(opt);
+            }
+            ayahSelect.value = curA;
+        }
+
         function getGlobalAyahIndex(surahIdx, ayahIdx) {
             let total = 0;
             for (let i = 0; i < surahIdx; i++) {
@@ -247,22 +266,16 @@
                 btnAudio.classList.remove('is-playing');
                 return;
             }
-
             const globalIndex = getGlobalAyahIndex(curS, curA);
             const audioUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${globalIndex}.mp3`;
-            
             btnAudio.classList.add('is-loading');
             audioPlayer.src = audioUrl;
-            
-            audioPlayer.play()
-                .then(() => {
-                    btnAudio.classList.remove('is-loading');
-                    btnAudio.classList.add('is-playing');
-                })
-                .catch(e => {
-                    btnAudio.classList.remove('is-loading');
-                    console.error("Audio failed", e);
-                });
+            audioPlayer.play().then(() => {
+                btnAudio.classList.remove('is-loading');
+                btnAudio.classList.add('is-playing');
+            }).catch(e => {
+                btnAudio.classList.remove('is-loading');
+            });
         }
 
         audioPlayer.onended = () => btnAudio.classList.remove('is-playing');
@@ -275,15 +288,16 @@
             const sEn = quranData.en[curS];
             const sTr = quranData.tr[curS];
 
-            const aAr = sAr.verses[curA];
-            const aEn = sEn.verses[curA];
-            const aTr = sTr.verses[curA];
-
-            document.getElementById('arabic').innerText = aAr.text;
-            document.getElementById('translation').innerText = aEn.translation;
-            document.getElementById('transliteration').innerText = aTr.transliteration;
-            document.getElementById('meta-info').innerText = `${sEn.transliteration} — ${curA + 1}`;
+            document.getElementById('arabic').innerText = sAr.verses[curA].text;
+            document.getElementById('translation').innerText = sEn.verses[curA].translation;
+            document.getElementById('transliteration').innerText = sTr.verses[curA].transliteration;
             
+            // Sync dropdowns
+            if(surahSelect.value != curS) {
+                surahSelect.value = curS;
+            }
+            updateAyahDropdown();
+
             updateBookmarkIcon();
             localStorage.setItem('quran_last_pos', JSON.stringify({s: curS, a: curA}));
         }
@@ -312,6 +326,18 @@
             }
             render();
         }
+
+        // Event Listeners for Selectors
+        surahSelect.addEventListener('change', (e) => {
+            curS = parseInt(e.target.value);
+            curA = 0;
+            render();
+        });
+
+        ayahSelect.addEventListener('change', (e) => {
+            curA = parseInt(e.target.value);
+            render();
+        });
 
         btnBookmark.addEventListener('click', toggleBookmark);
         btnAudio.addEventListener('click', playRecitation);
